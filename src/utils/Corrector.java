@@ -5,6 +5,14 @@ import ticket.*;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+/**
+ * The Corrector class provides methods for checking the correctness of various fields and arguments in the ticket management system.
+ * It includes methods for checking the correctness of ticket fields, coordinates, venue, address, zip code, price, and command arguments.
+ * The class also provides methods for checking the correctness of command names and IDs for tickets and venues.
+ *
+ * @version 1.0
+ * @since 2021-10-01
+ */
 
 public class Corrector {
     public static boolean checkTicketForCorrect(Ticket ticket) {

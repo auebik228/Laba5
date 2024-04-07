@@ -1,5 +1,11 @@
 package ticket;
-
+/**
+ * Represents an address.
+ *
+ * This class stores information about a street and a zip code.
+ * The street field cannot be null, while the zip code field can be null.
+ *
+ */
 public class Address {
     private String street; //Поле не может быть null
     private String zipCode; //Длина строки должна быть не меньше 5, Поле может быть null

@@ -6,7 +6,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
-
+/**
+ * The ExecuteScript class is a subclass of AbstractCommand.
+ * It represents a command that executes a script from a specified file.
+ * The class provides a method to use the command and execute the script.
+ *
+ * @version 1.0
+ * @since 2021-10-01
+ */
 public class ExecuteScript extends AbstractCommand {
     public ExecuteScript() {
         this.name = CommandNames.executeScript;

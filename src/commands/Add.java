@@ -12,7 +12,22 @@ import java.text.ParseException;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-
+/**
+ * The 'Add' class is a command for adding a new ticket to the collection.
+ * It extends the 'AbstractCommand' class and implements the 'Cloneable' interface.
+ *
+ * Attributes:
+ * - name: The name of the command (CommandNames.add)
+ * - specification: The description of the command ("Команда для добавления нового билета в коллекцию")
+ * - mode: The mode of the command (true or false)
+ *
+ * Methods:
+ * - use(): Executes the command based on the mode. If the mode is true, it creates a new ticket with random values and adds it to the collection.
+ *           If the mode is false, it reads the ticket fields from a file and creates a ticket object with the provided values.
+ *           It then checks if the ticket data is valid and adds it to the collection if it is.
+ *
+ * Note: The 'Add' class is used in a ticket management system to add new tickets to the collection.
+ */
 public class Add extends AbstractCommand implements Cloneable{
     public Add() {
         this.name = CommandNames.add;

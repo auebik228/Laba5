@@ -1,5 +1,21 @@
 package ticket;
-
+/**
+ * The Ticket class represents a ticket for an event.
+ * It contains information such as the ticket ID, name, coordinates, creation date, price, type, and venue.
+ *
+ * The ticket ID must be a positive and unique value.
+ * The name must not be null and cannot be an empty string.
+ * The coordinates must not be null.
+ * The creation date must not be null and is automatically generated.
+ * The price can be null, but if it is provided, it must be a positive value.
+ * The type can be null.
+ * The venue must not be null.
+ *
+ * This class implements the Comparable interface, allowing tickets to be compared based on their IDs.
+ *
+ * @author [Your Name]
+ * @version [Date]
+ */
 public class Ticket implements Comparable<Ticket>{
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой

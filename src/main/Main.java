@@ -16,13 +16,23 @@ import static commands.CommandNames.exit;
 
 
 public class Main {
-
+    /**
+     * The Main class is the entry point of the program.
+     * It contains the main method which loads the collection from a file,
+     * starts the program, and handles user commands.
+     * The program continues to prompt the user for commands until the user decides to exit.
+     * The Main class uses the CommandManager class to execute the user commands.
+     * If the user closes the input scanner, the program will exit gracefully.
+     */
     public static void main(String[] args) {
-        String filePath = args[0];
-        FileWorker.loadCollection(filePath);
-        System.out.println("Работа программы начата.");
+        if (args.length==1){
+            String filePath = args[0];
+            FileWorker.loadCollection(filePath);
+        }else{
+            System.out.println("Неверное количество аргументов, коллекция не загружена");
+        }System.out.println("Работа программы начата.");
         try {
-            while (true) {
+            while (true) {;
                 CommandManager.useCommand(ConsoleAdministrator.commandRequest());
             }
         } catch (NoSuchElementException e) {

@@ -1,6 +1,8 @@
 package commands;
 
-public abstract class AbstractCommand {
+import java.io.Serializable;
+
+public abstract class AbstractCommand implements Serializable {
     protected CommandNames name;
     protected String specification;
     protected boolean mode;

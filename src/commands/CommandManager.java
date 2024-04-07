@@ -5,7 +5,12 @@ import utils.FileWorker;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Scanner;
-
+/**
+ * The CommandManager class is responsible for managing the commands in the program.
+ * It contains a HashMap that maps each command name to its corresponding AbstractCommand object.
+ * The class provides methods to use a command, get the list of commands, and set the count of using commands.
+ * It also provides methods to set the file mode and console mode for certain commands.
+ */
 public class CommandManager {
     final static private HashMap<CommandNames, AbstractCommand> commands = new HashMap<>();
     public static int countOfUsingCommands;

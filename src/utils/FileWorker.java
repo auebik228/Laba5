@@ -17,6 +17,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+/**
+ * The FileWorker class is responsible for loading and saving the collection of tickets from/to a file.
+ * It provides methods to load the collection from a file, save the collection to a file, and read ticket fields from the console.
+ * The class uses the Gson library to serialize and deserialize the collection.
+ * The class also provides methods to parse ticket price and ticket type from strings.
+ *
+ * This class provides the following methods:
+ * - loadCollection(String filePath): Loads the collection of tickets from a file.
+ * - saveCollection(File file): Saves the collection of tickets to a file.
+ * - setScannerForRead(Scanner scanner): Sets the scanner for reading ticket fields from the console.
+ * - readTicketFields(): Reads ticket fields from the console and returns them as an ArrayList<String>.
+ * - parseTicketPrice(String s): Parses a string to a Long representing the ticket price.
+ * - parseTicketType(String s): Parses a string to a TicketType enum value.
+ */
 
 public class FileWorker {
     private static Scanner scannerForRead;

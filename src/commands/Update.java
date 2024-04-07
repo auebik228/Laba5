@@ -14,7 +14,30 @@ import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
+/**
+ * The 'Update' class is a subclass of the 'AbstractCommand' class.
+ * It represents a command that updates the data of a ticket with a selected id.
+ *
+ * The 'Update' class has the following attributes:
+ * - name: a CommandNames enum value representing the name of the command (update)
+ * - specification: a string representing the description of the command ("Обновляет данные билета с выбранным id")
+ * - mode: a boolean indicating the mode of the command (true for interactive mode, false for script mode)
+ * - inputData: a string representing the input data for the command
+ *
+ * The 'Update' class provides the following methods:
+ * - use(): a method that executes the update command based on the mode and input data
+ *
+ * In interactive mode, the 'use' method checks if the ticket with the given id exists in the collection.
+ * If it exists, it updates the ticket's data with the user input values and prints a success message.
+ * If it doesn't exist, it prints an error message.
+ *
+ * In script mode, the 'use' method reads the ticket fields from a file and creates a new ticket object.
+ * It then checks if the ticket is valid based on certain criteria and updates the ticket in the collection.
+ * If the ticket is not valid or the number of fields is incorrect, it prints an error message.
+ *
+ * The 'Update' class is used to update the data of a ticket in the collection.
+ * It is part of a larger system that manages tickets and venues.
+ */
 public class Update extends AbstractCommand {
 
     public Update() {
