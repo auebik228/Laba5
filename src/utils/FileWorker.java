@@ -69,7 +69,7 @@ public class FileWorker {
 
     }
 
-    public static void saveCollection(File file) {
+    public static String saveCollection(File file) {
         try {
             FileOutputStream writer = new FileOutputStream(file);
             GsonBuilder builder = new GsonBuilder();
@@ -77,9 +77,9 @@ public class FileWorker {
             Gson gson = builder.create();
             String s = gson.toJson(CollectionHandler.getCollection());
             writer.write(s.getBytes());
-            System.out.println("Коллекция сохранена в файл с названием - " + file + ".");
+            return "Коллекция сохранена в файл с названием - " + file + ".";
         } catch (IOException e) {
-            System.out.println("Неверное имя файла или файл не может быть открыт или не может быть создан.");
+            return "Неверное имя файла или файл не может быть открыт или не может быть создан.";
         }
 
     }

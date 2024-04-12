@@ -21,7 +21,7 @@ public class ExecuteScript extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         try {
             Path path = Paths.get(getInputData());
             Scanner scanner = new Scanner(path);
@@ -31,18 +31,16 @@ public class ExecuteScript extends AbstractCommand {
                 CommandManager.setCountOfUsingCommands(CommandManager.getCountOfUsingCommands() + 1);
                 if (Corrector.checkCommand(command)) {
                     if (command[0].equals("executeScript") && command[1].equals(path.toString()) | CommandManager.getCountOfUsingCommands() > 100) {
-                        System.out.println("Вы вызвали рекурсию, выполнение скрипта будет закончено.");
-                        break;
+                        return "Вы вызвали рекурсию, выполнение скрипта будет закончено.";
                     }
-                    System.out.println("Выполняется команда - "+ command[0] + " результат: ");
-                    CommandManager.useCommand(command);
+                    return CommandManager.useCommand(CommandManager.createCommand(command));
                 }
             }
             CommandManager.setConsoleMode();
-            System.out.println("Выполнен скрипт из файла:" + path.toString());
+            return "Выполнен скрипт из файла:" + path.toString();
 
         } catch (IOException e) {
-            System.out.println("Невозможно выполнить команду так, как файл не существует или к нему нет доступа.");
+            return "Невозможно выполнить команду так, как файл не существует или к нему нет доступа.";
         }
 
     }

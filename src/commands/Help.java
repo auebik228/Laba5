@@ -1,6 +1,7 @@
 package commands;
 
 
+import java.util.ArrayList;
 import java.util.Map;
 /**
  * The Help class is a subclass of AbstractCommand.
@@ -15,12 +16,14 @@ public class Help extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         System.out.println("Список команд");
+        ArrayList<String> strings = new ArrayList<>();
         for (Map.Entry<CommandNames, AbstractCommand> entry : CommandManager.getComands().entrySet()) {
             if (entry.getKey() != CommandNames.voidCommand) {
-                System.out.println(entry.getValue());
+                strings.add(entry.getKey().toString());
             }
         }
+        return strings.toString();
     }
 }

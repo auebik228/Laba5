@@ -27,8 +27,9 @@ public class Exit extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         System.out.println("Спасибо за работу в этой крутейшей программе, досвидания.");
         System.exit(0);
+        return null;
     }
 }

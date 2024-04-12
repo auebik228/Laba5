@@ -6,7 +6,7 @@ public abstract class AbstractCommand implements Serializable {
     protected CommandNames name;
     protected String specification;
     protected boolean mode;
-    private String inputData;
+    private String argument;
 
     public CommandNames getName() {
         return name;
@@ -21,11 +21,11 @@ public abstract class AbstractCommand implements Serializable {
     }
 
     public void setInputData(String inputData) {
-        this.inputData = inputData;
+        this.argument = inputData;
     }
 
     public String getInputData() {
-        return inputData;
+        return argument;
     }
 
     public String getSpecification() {
@@ -36,7 +36,7 @@ public abstract class AbstractCommand implements Serializable {
         this.mode = mode;
     }
 
-    public abstract void use();
+    public abstract String use();
 
 
     @Override

@@ -12,14 +12,15 @@ import utils.FileWorker;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+
 /**
  * The Info class is a subclass of AbstractCommand.
  * It represents a command that provides information about the collection.
  * The class overrides the use() method to print the creation time of the collection and the number of elements in the collection.
- *
+ * <p>
  * This class provides the following methods:
  * - use(): Prints the creation time of the collection and the number of elements in the collection.
-
+ * <p>
  * The specification of this command is "Infromation about collection".
  */
 public class InsertAtIndex extends AbstractCommand {
@@ -32,7 +33,7 @@ public class InsertAtIndex extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         if (mode) {
             if (CollectionHandler.getCollection().size() - Integer.parseInt(getInputData()) > 0 && Integer.parseInt(getInputData()) >= 0) {
                 ZonedDateTime time = ZonedDateTime.now();
@@ -42,9 +43,9 @@ public class InsertAtIndex extends AbstractCommand {
                         time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
                         new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(), ConsoleAdministrator.getAdress()));
                 CollectionHandler.getCollection().add(Integer.parseInt(getInputData()), ticket);
-                System.out.println("Билет с id " + ticket.getId() + " создан на " + Integer.parseInt(getInputData()) + " индексе");
+                return "Билет с id " + ticket.getId() + " создан на " + Integer.parseInt(getInputData()) + " индексе";
             } else {
-                System.out.println("Невозможно вставить на данный индекс так как размер коллекции - " + CollectionHandler.getCollection().size());
+                return "Невозможно вставить на данный индекс так как размер коллекции - " + CollectionHandler.getCollection().size();
             }
         } else {
             ArrayList<String> ticketFields = FileWorker.readTicketFields();
@@ -63,18 +64,19 @@ public class InsertAtIndex extends AbstractCommand {
                             CollectionHandler.getCollection().add(Integer.parseInt(getInputData()), ticket);
                             CollectionHandler.getTicketIdList().add(ticket.getId());
                             CollectionHandler.getVenueIdList().add(ticket.getVenue().getId());
-                            System.out.println("Билет с id " + ticket.getId() + " создан.");
+                            return "Билет с id " + ticket.getId() + " создан.";
                         } else {
-                            System.out.println("Данные о билете не проходят по заданным заданным в задание ограничениям");
+                            return "Данные о билете не проходят по заданным заданным в задание ограничениям";
                         }
                     } catch (DateTimeException | IllegalArgumentException e) {
-                        System.out.println("Некоретнные данные о билете команда insertAtIndex не будет выполнена.");
+                        return "Некоретнные данные о билете команда insertAtIndex не будет выполнена.";
                     }
                 } else {
-                    System.out.println("Неверное число аргументов для создания билета");
+                    return "Неверное число аргументов для создания билета";
                 }
-            }else{
-                System.out.println("Невозможно вставить на данный индекс так как размер коллекции - " + CollectionHandler.getCollection().size());
+            } else {
+                return "Невозможно вставить на данный индекс так как размер коллекции - " +
+                        CollectionHandler.getCollection().size();
             }
         }
     }

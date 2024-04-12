@@ -47,7 +47,7 @@ public class Update extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         if (mode) {
             if (CollectionHandler.getTicketIdList().contains(Long.parseLong(getInputData()))) {
                 ZonedDateTime time = ZonedDateTime.now();
@@ -63,9 +63,9 @@ public class Update extends AbstractCommand {
                 t.getVenue().setName(ConsoleAdministrator.getVenueName());
                 t.getVenue().setCapacity(ConsoleAdministrator.getVenueCapacity());
                 t.getVenue().setAddress( ConsoleAdministrator.getAdress());
-                System.out.println("Данные билета с id - " + t.getId() + " обновлены");
+                return "Данные билета с id - " + t.getId() + " обновлены";
             } else {
-                System.out.println("Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.");
+                return "Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.";
 
             }
         } else {
@@ -88,18 +88,18 @@ public class Update extends AbstractCommand {
                             CollectionHandler.getCollection().add(i, ticket);
                             CollectionHandler.getTicketIdList().add(ticket.getId());
                             CollectionHandler.getVenueIdList().add(ticket.getVenue().getId());
-                            System.out.println("Значения билета с id " + ticket.getId() + " обновлены.");
+                            return "Значения билета с id " + ticket.getId() + " обновлены.";
                         } else {
-                            System.out.println("Данные о билете не проходят по заданным заданным в задание ограничениям");
+                            return "Данные о билете не проходят по заданным заданным в задание ограничениям";
                         }
                     } catch (DateTimeException | IllegalArgumentException e) {
-                        System.out.println("Некоретнные данные о билете команда update не будет выполнена.");
+                        return "Некоретнные данные о билете команда update не будет выполнена.";
                     }
                 } else {
-                    System.out.println("Неверное число аргументов для обновления билета");
+                    return "Неверное число аргументов для обновления билета";
                 }
             }else{
-                System.out.println("Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.");
+                return "Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.";
             }
 
         }

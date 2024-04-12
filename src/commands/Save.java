@@ -18,13 +18,13 @@ public class Save extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         try {
             File file = new File(getInputData());
-            FileWorker.saveCollection(file);
-            setInputData(null);
+            setInputData(null);;
+            return FileWorker.saveCollection(file);
         }catch (NullPointerException e){
-            System.out.println("Неверное имя файла ");
+            return "Неверное имя файла ";
         }
 
     }

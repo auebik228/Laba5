@@ -1,7 +1,6 @@
 package utils;
 
-import commands.Add;
-import commands.CommandNames;
+import commands.*;
 import ticket.*;
 
 import java.nio.charset.CoderResult;
@@ -43,21 +42,21 @@ public class ConsoleAdministrator {
      *         or a default "voidCommand" if the input is invalid
      * @throws PatternSyntaxException if the input command is not valid
      */
-    public static String[] commandRequest() {
+    public static AbstractCommand commandRequest() {
         System.out.println("Введите название команды и аргументы команды(Если есть) в одну строку: ");
         promt();
         try {
             String s = scanner.nextLine();
             String[] command = s.split(" ");
             if (Corrector.checkCommand(command)) {
-                return command;
+                return CommandManager.createCommand(command);
             } else {
                 System.out.println("Неверное название команды или аргумент, для ознакомления со списком команд введите help.");
-                return new String[]{"voidCommand"};
+                return new VoidCommand();
             }
         } catch (PatternSyntaxException e) {
             System.out.println("Неверный ввод команды.");
-            return new String[]{"voidCommand"};
+            return new VoidCommand();
         }
 
     }

@@ -23,12 +23,12 @@ public class Sort extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         if(CollectionHandler.getCollection().size()>0) {
             Collections.sort(CollectionHandler.getCollection());
-            System.out.println("Коллекция отсортирована.");
+            return "Коллекция отсортирована.";
         }else{
-            System.out.println("Коллекция пуста нечего сортировать.");
+            return "Коллекция пуста нечего сортировать.";
         }
     }
 }

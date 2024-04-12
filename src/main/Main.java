@@ -33,7 +33,7 @@ public class Main {
         }System.out.println("Работа программы начата.");
         try {
             while (true) {;
-                CommandManager.useCommand(ConsoleAdministrator.commandRequest());
+              System.out.println(CommandManager.useCommand(ConsoleAdministrator.commandRequest()));
             }
         } catch (NoSuchElementException e) {
             System.out.println("Вы закрыли ввод для сканера, программа не может дальше продолжать работу.");

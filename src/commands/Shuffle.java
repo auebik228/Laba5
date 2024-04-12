@@ -22,12 +22,12 @@ public class Shuffle extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         if (CollectionHandler.getCollection().size()>0) {
             Collections.shuffle(CollectionHandler.getCollection());
-            System.out.println("Коллекция размешана.");
+            return "Коллекция размешана.";
         }else{
-            System.out.println("Коллекция пуста нечего размешивать.");
+            return "Коллекция пуста нечего размешивать.";
         }
     }
 }

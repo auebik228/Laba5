@@ -34,12 +34,17 @@ public class CommandManager {
         commands.put(CommandNames.executeScript, new ExecuteScript());
     }
 
-    static public void useCommand(String[] command) {
-        if (command.length == 1) {
-            commands.get(CommandNames.valueOf(command[0])).use();
-        } else {
-            commands.get(CommandNames.valueOf(command[0])).setInputData(command[1]);
-            commands.get(CommandNames.valueOf(command[0])).use();
+    static public String useCommand(AbstractCommand abstractCommand) {
+        return abstractCommand.use();
+    }
+    public static AbstractCommand createCommand(String[] command){
+        if(command.length==2) {
+            var commmand = commands.get(CommandNames.valueOf(command[0]) );
+            commmand.setInputData(command[1]);
+            return commmand;
+        }else{
+            var commmand = commands.get(CommandNames.valueOf(command[0]));
+            return commmand;
         }
     }
 

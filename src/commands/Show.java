@@ -20,13 +20,12 @@ public class Show extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         if(CollectionHandler.getCollection().size()>0) {
-            for (int i = 0; i < CollectionHandler.getCollection().size(); i++) {
-                System.out.println(CollectionHandler.getCollection().get(i));
-            }
+            return CollectionHandler.getCollection().toString();
+
         }else{
-            System.out.println("Коллекция пуста нечего выводить.");
+            return "Коллекция пуста нечего выводить.";
         }
     }
 }

@@ -3,6 +3,7 @@ package commands;
 import ticket.Ticket;
 import utils.CollectionHandler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 /**
@@ -29,17 +30,18 @@ public class PrintFieldAscendingType extends AbstractCommand {
     }
 
     @Override
-    public void use() {
+    public String use() {
         LinkedList<Ticket> list = (LinkedList<Ticket>) CollectionHandler.getCollection().clone();
+        ArrayList<String> strings = new ArrayList<>();
         Collections.sort(list);
         if(list.size()>0){
         for (Ticket ticket : list) {
-            System.out.println("Билет с id " + ticket.getId() + " имеет тип: " + ticket.getType());
+            strings.add("Билет с id " + ticket.getId() + " имеет тип: " + ticket.getType());
         }
-            System.out.println("Типы выведены.");
+            return strings.toString();
         }
         else {
-            System.out.println("Коллекция пуста, нечего выводить.");
+            return "Коллекция пуста, нечего выводить.";
         }
         }
 

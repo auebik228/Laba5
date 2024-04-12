@@ -38,20 +38,16 @@ public class RemoveById extends AbstractCommand{
     }
     @Override
 
-    public void use() {
-        boolean t = true;
+    public String use() {
         for (int i = 0; i < CollectionHandler.getCollection().size(); i++) {
             if (CollectionHandler.getCollection().get(i).getId() == Long.parseLong(this.getInputData())) {
                 CollectionHandler.getTicketIdList().remove(CollectionHandler.getCollection().get(i).getId());
                 CollectionHandler.getVenueIdList().remove(CollectionHandler.getCollection().get(i).getVenue().getId());
                 CollectionHandler.getCollection().remove(i);
-                System.out.println("Элемент с id " + this.getInputData() + " удален.");
-                t = false;
+                return "Элемент с id " + this.getInputData() + " удален.";
             }
         }
-        if (t) {
-            System.out.println("Элемента с таким id нет.");
-        }
+           return "Элемента с таким id нет.";
     }
 
 }

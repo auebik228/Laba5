@@ -18,8 +18,8 @@ public class Info extends AbstractCommand {
     }
 
     @Override
-    public void use() {
-        System.out.println("Время создания коллекции - " + CollectionHandler.getCreatingtime() + System.lineSeparator() +
-                "Количество элементов в коллекции - " + CollectionHandler.getCollection().size());
+    public String use() {
+        return "Время создания коллекции - " + CollectionHandler.getCreatingtime() + System.lineSeparator() +
+                "Количество элементов в коллекции - " + CollectionHandler.getCollection().size();
     }
 }

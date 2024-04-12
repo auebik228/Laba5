@@ -6,9 +6,6 @@ import utils.ConsoleAdministrator;
 import utils.Corrector;
 import utils.FileWorker;
 
-import java.io.Console;
-import java.io.File;
-import java.text.ParseException;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -28,7 +25,7 @@ import java.util.ArrayList;
  *
  * Note: The 'Add' class is used in a ticket management system to add new tickets to the collection.
  */
-public class Add extends AbstractCommand implements Cloneable{
+public class Add extends AbstractCommand {
     public Add() {
         this.name = CommandNames.add;
         this.specification = "Команда для добавления нового билета в коллекцию";
@@ -36,17 +33,18 @@ public class Add extends AbstractCommand implements Cloneable{
     }
 
     @Override
-    public void use() {
+    public String use() {
         if (mode) {
             ZonedDateTime time = ZonedDateTime.now();
             long ticketId = (long) ((Math.random() + 1) * 100);
             long venueId = (long) ((Math.random() + 1) * 100);
             Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
                     time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
-                    new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(), ConsoleAdministrator.getAdress()));
+                    new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(),
+                            ConsoleAdministrator.getAdress()));
             CollectionHandler.getCollection().add(ticket);
             CollectionHandler.getTicketIdList().add(ticketId);
-            System.out.println("Билет с id " + ticket.getId() + " создан.");
+            return "Билет с id " + ticket.getId() + " создан.";
         } else {
             ArrayList<String> ticketFields = FileWorker.readTicketFields();
             if (ticketFields.size() == 10 || ticketFields.size() == 12) {
@@ -63,20 +61,18 @@ public class Add extends AbstractCommand implements Cloneable{
                         CollectionHandler.getCollection().add(ticket);
                         CollectionHandler.getTicketIdList().add(ticket.getId());
                         CollectionHandler.getVenueIdList().add(ticket.getVenue().getId());
-                        System.out.println("Билет с id " + ticket.getId() + " создан.");
+                        return "Билет с id " + ticket.getId() + " создан.";
                     } else {
-                        System.out.println("Данные о билете не проходят по заданным заданным в задание ограничениям");
+                        return "Данные о билете не проходят по заданным заданным в задание ограничениям";
                     }
                 } catch (DateTimeException | IllegalArgumentException e) {
-                    System.out.println("Некоретнные данные о билете команда add не будет выполнена.");
+                    return "Некоретнные данные о билете команда add не будет выполнена.";
                 }
             } else {
-                System.out.println("Неверное число аргументов для создания билета");
+                return "Неверное число аргументов для создания билета";
             }
         }
     }
-
-
 }
 
 
