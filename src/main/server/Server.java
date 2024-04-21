@@ -1,6 +1,8 @@
 package main.server;
 
 import commands.Add;
+import commands.CommandManager;
+import utils.Serializer;
 
 import java.io.*;
 import java.net.*;
@@ -10,45 +12,27 @@ import java.util.*;
 
 public class Server {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        // Создание серверного сокета и настройка на неблокирующий режим
+
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.configureBlocking(false);
-
-        // Получение серверного сокета и привязка к порту
         ServerSocket serverSocket = serverSocketChannel.socket();
-        serverSocket.bind(new InetSocketAddress(8080));
-
-        // Создание селектора
+        serverSocket.bind(new InetSocketAddress(1234));
         Selector selector = Selector.open();
-
-        // Регистрация серверного сокета в селекторе для прослушивания подключений
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-
+        KeyHandler keyHandler = new KeyHandler(selector);
         while (true) {
             selector.select();
             Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
+            Add add;
             while (keyIterator.hasNext()) {
                 SelectionKey key = keyIterator.next();
                 keyIterator.remove();
                 if (key.isAcceptable()) {
-                    SocketChannel clientChannel = serverSocketChannel.accept();
-                    clientChannel.configureBlocking(false);
-                    clientChannel.register(selector, SelectionKey.OP_READ);
+                    keyHandler.acceptKey(key);
                 } else if (key.isReadable()) {
-                    SocketChannel clientChannel = (SocketChannel) key.channel();
-                    clientChannel.configureBlocking(false);
-                    ByteBuffer buffer = ByteBuffer.allocate(4096);
-                    buffer.clear();
-                    clientChannel.read(buffer);
-                    buffer.flip();
-                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer.array());
-                    ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-                    String string = (String)objectInputStream.readObject();
-                    System.out.println(string);
-
-                    clientChannel.register(selector, SelectionKey.OP_WRITE);
+                    keyHandler.readKey(key);
                 } else if (key.isWritable()) {
-
+                    keyHandler.writeKey(key);
                 }
             }
         }

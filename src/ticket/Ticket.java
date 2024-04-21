@@ -1,4 +1,7 @@
 package ticket;
+
+import java.io.Serializable;
+
 /**
  * The Ticket class represents a ticket for an event.
  * It contains information such as the ticket ID, name, coordinates, creation date, price, type, and venue.
@@ -16,7 +19,7 @@ package ticket;
  * @author [Your Name]
  * @version [Date]
  */
-public class Ticket implements Comparable<Ticket>{
+public class Ticket implements Comparable<Ticket>, Serializable {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null

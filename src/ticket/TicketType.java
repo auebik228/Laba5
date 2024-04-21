@@ -1,4 +1,7 @@
 package ticket;
+
+import java.io.Serializable;
+
 /**
  * The 'TicketType' class represents the different types of tickets available.
  * It is an enumeration class that defines the following ticket types:
@@ -10,7 +13,7 @@ package ticket;
  * This class is used to categorize tickets based on their type and provide a way to
  * differentiate between different ticket types in the system.
  */
-public enum TicketType {
+public enum TicketType implements Serializable {
     VIP,
     USUAL,
     BUDGETARY,

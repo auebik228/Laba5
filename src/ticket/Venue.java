@@ -1,4 +1,7 @@
 package ticket;
+
+import java.io.Serializable;
+
 /**
  * The Venue class represents a venue for events.
  * It contains information about the venue's ID, name, capacity, and address.
@@ -18,7 +21,7 @@ package ticket;
  * The Venue class provides getter and setter methods for each field, allowing access and modification of the field values.
  * The class also overrides the toString() method to provide a string representation of the Venue object.
  */
-public class Venue {
+public class Venue implements Serializable {
     private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private int capacity; //Значение поля должно быть больше 0

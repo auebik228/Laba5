@@ -25,7 +25,7 @@ import java.util.ArrayList;
  *
  * Note: The 'Add' class is used in a ticket management system to add new tickets to the collection.
  */
-public class Add extends AbstractCommand {
+public class Add extends AbstractCommand implements Adding {
     public Add() {
         this.name = CommandNames.add;
         this.specification = "Команда для добавления нового билета в коллекцию";
@@ -35,13 +35,6 @@ public class Add extends AbstractCommand {
     @Override
     public String use() {
         if (mode) {
-            ZonedDateTime time = ZonedDateTime.now();
-            long ticketId = (long) ((Math.random() + 1) * 100);
-            long venueId = (long) ((Math.random() + 1) * 100);
-            Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
-                    time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
-                    new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(),
-                            ConsoleAdministrator.getAdress()));
             CollectionHandler.getCollection().add(ticket);
             CollectionHandler.getTicketIdList().add(ticketId);
             return "Билет с id " + ticket.getId() + " создан.";
@@ -72,6 +65,18 @@ public class Add extends AbstractCommand {
                 return "Неверное число аргументов для создания билета";
             }
         }
+    }
+
+    @Override
+    public void ticketRequest() {
+        ZonedDateTime time = ZonedDateTime.now();
+        long ticketId = (long) ((Math.random() + 1) * 100);
+        long venueId = (long) ((Math.random() + 1) * 100);
+        Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
+                time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
+                new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(),
+                        ConsoleAdministrator.getAdress()));
+
     }
 }
 

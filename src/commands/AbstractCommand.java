@@ -1,5 +1,7 @@
 package commands;
 
+import ticket.Ticket;
+
 import java.io.Serializable;
 
 public abstract class AbstractCommand implements Serializable {
@@ -7,6 +9,7 @@ public abstract class AbstractCommand implements Serializable {
     protected String specification;
     protected boolean mode;
     private String argument;
+    private Ticket ticket;
 
     public CommandNames getName() {
         return name;
@@ -37,7 +40,9 @@ public abstract class AbstractCommand implements Serializable {
     }
 
     public abstract String use();
-
+    public void setTicket(Ticket ticket){
+        this.ticket=ticket;
+    }
 
     @Override
     public String toString() {

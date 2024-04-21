@@ -1,4 +1,7 @@
 package ticket;
+
+import java.io.Serializable;
+
 /**
  * Represents an address.
  *
@@ -6,7 +9,7 @@ package ticket;
  * The street field cannot be null, while the zip code field can be null.
  *
  */
-public class Address {
+public class Address implements Serializable {
     private String street; //Поле не может быть null
     private String zipCode; //Длина строки должна быть не меньше 5, Поле может быть null
     ; //Поле не может быть null
