@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class Venue implements Serializable {
     private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
-    private int capacity; //Значение поля должно быть больше 0
+    private long capacity; //Значение поля должно быть больше 0
     private Address address; //Поле может быть null
     public Venue(Long id,String name,int capacity,Address adress){
         this.id=id;
@@ -51,7 +51,7 @@ public class Venue implements Serializable {
         this.id = id;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(long capacity) {
         this.capacity = capacity;
     }
 

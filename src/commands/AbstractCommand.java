@@ -40,9 +40,7 @@ public abstract class AbstractCommand implements Serializable {
     }
 
     public abstract String use();
-    public void setTicket(Ticket ticket){
-        this.ticket=ticket;
-    }
+
 
     @Override
     public String toString() {

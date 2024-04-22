@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * <p>
  * The specification of this command is "Infromation about collection".
  */
-public class InsertAtIndex extends AbstractCommand {
+public class InsertAtIndex extends AddingCommand {
 
 
     public InsertAtIndex() {
@@ -36,13 +36,7 @@ public class InsertAtIndex extends AbstractCommand {
     public String use() {
         if (mode) {
             if (CollectionHandler.getCollection().size() - Integer.parseInt(getInputData()) > 0 && Integer.parseInt(getInputData()) >= 0) {
-                ZonedDateTime time = ZonedDateTime.now();
-                long ticketId = (long) ((Math.random() + 1) * 100);
-                long venueId = (long) ((Math.random() + 1) * 100);
-                Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
-                        time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
-                        new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(), ConsoleAdministrator.getAdress()));
-                CollectionHandler.getCollection().add(Integer.parseInt(getInputData()), ticket);
+                CollectionHandler.getCollection().add(Integer.parseInt(getInputData()), this.ticket);
                 return "Билет с id " + ticket.getId() + " создан на " + Integer.parseInt(getInputData()) + " индексе";
             } else {
                 return "Невозможно вставить на данный индекс так как размер коллекции - " + CollectionHandler.getCollection().size();
@@ -79,6 +73,17 @@ public class InsertAtIndex extends AbstractCommand {
                         CollectionHandler.getCollection().size();
             }
         }
+    }
+
+    @Override
+    public void ticketRequest() {
+        ZonedDateTime time = ZonedDateTime.now();
+        long ticketId = (long) ((Math.random() + 1) * 100);
+        long venueId = (long) ((Math.random() + 1) * 100);
+        Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
+                time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
+                new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(), ConsoleAdministrator.getAdress()));
+        this.ticket=ticket;
     }
 }
 

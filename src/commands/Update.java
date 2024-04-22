@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * The 'Update' class is used to update the data of a ticket in the collection.
  * It is part of a larger system that manages tickets and venues.
  */
-public class Update extends AbstractCommand {
+public class Update extends AddingCommand {
 
     public Update() {
         this.name = CommandNames.update;
@@ -54,15 +54,15 @@ public class Update extends AbstractCommand {
                 long ticketId = Long.parseLong(getInputData());
                 long venueId = (long) ((Math.random() + 1) * 100);
                 Ticket t = CollectionHandler.getCollection().get(CollectionHandler.findIndexById(ticketId));
-                t.setName(ConsoleAdministrator.getTicketName());
-                t.setCoordinates(ConsoleAdministrator.getTicketCoordinates());
-                t.setCreationDate(time);
-                t.setPrice(ConsoleAdministrator.getTicketPrice());
-                t.setType(ConsoleAdministrator.getTicketType());
-                t.getVenue().setId(venueId);
-                t.getVenue().setName(ConsoleAdministrator.getVenueName());
-                t.getVenue().setCapacity(ConsoleAdministrator.getVenueCapacity());
-                t.getVenue().setAddress( ConsoleAdministrator.getAdress());
+                t.setName(this.ticket.getName());
+                t.setCoordinates(this.ticket.getCoordinates());
+                t.setCreationDate(this.ticket.getCreationDate());
+                t.setPrice(this.ticket.getPrice());
+                t.setType(this.ticket.getType());
+                t.getVenue().setId(this.ticket.getVenue().getId());
+                t.getVenue().setName(this.ticket.getVenue().getName());
+                t.getVenue().setCapacity(this.ticket.getVenue().getCapacity());
+                t.getVenue().setAddress( this.ticket.getVenue().getAddress());
                 return "Данные билета с id - " + t.getId() + " обновлены";
             } else {
                 return "Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.";
@@ -103,5 +103,17 @@ public class Update extends AbstractCommand {
             }
 
         }
+    }
+
+    @Override
+    public void ticketRequest() {
+        ZonedDateTime time = ZonedDateTime.now();
+        long ticketId = (long) ((Math.random() + 1) * 100);
+        long venueId = (long) ((Math.random() + 1) * 100);
+        Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
+                time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
+                new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(),
+                        ConsoleAdministrator.getAdress()));
+        setTicket(ticket);
     }
 }

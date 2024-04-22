@@ -1,4 +1,7 @@
 package commands;
+
+import ticket.Venue;
+
 /**
  * The 'VoidCommand' class is a concrete implementation of the abstract class 'AbstractCommand'.
  * It represents a command that does not perform any action when used.
@@ -8,6 +11,9 @@ package commands;
  * No action is performed.
  */
 public class VoidCommand extends AbstractCommand {
+    public VoidCommand(){
+        this.name=CommandNames.voidCommand;
+    }
     @Override
     public String use() {
         return null;

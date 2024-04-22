@@ -51,6 +51,9 @@ public class ConsoleAdministrator {
             if (Corrector.checkCommand(command)) {
                 return CommandManager.createCommand(command);
             } else {
+                if (command[0]==""){
+                    return new VoidCommand();
+                }
                 System.out.println("Неверное название команды или аргумент, для ознакомления со списком команд введите help.");
                 return new VoidCommand();
             }

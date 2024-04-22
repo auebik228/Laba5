@@ -3,7 +3,9 @@ import ticket.Ticket;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The CollectionHandler class is responsible for managing the collection of tickets.

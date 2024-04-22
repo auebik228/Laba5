@@ -25,7 +25,7 @@ import java.util.ArrayList;
  *
  * Note: The 'Add' class is used in a ticket management system to add new tickets to the collection.
  */
-public class Add extends AbstractCommand implements Adding {
+public class Add extends AddingCommand  {
     public Add() {
         this.name = CommandNames.add;
         this.specification = "Команда для добавления нового билета в коллекцию";
@@ -35,9 +35,9 @@ public class Add extends AbstractCommand implements Adding {
     @Override
     public String use() {
         if (mode) {
-            CollectionHandler.getCollection().add(ticket);
-            CollectionHandler.getTicketIdList().add(ticketId);
-            return "Билет с id " + ticket.getId() + " создан.";
+            CollectionHandler.getCollection().add(getTicket());
+            CollectionHandler.getTicketIdList().add(getTicket().getId());
+            return "Билет с id " + getTicket().getId() + " создан.";
         } else {
             ArrayList<String> ticketFields = FileWorker.readTicketFields();
             if (ticketFields.size() == 10 || ticketFields.size() == 12) {
@@ -76,7 +76,7 @@ public class Add extends AbstractCommand implements Adding {
                 time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
                 new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(),
                         ConsoleAdministrator.getAdress()));
-
+        setTicket(ticket);
     }
 }
 

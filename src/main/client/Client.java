@@ -1,6 +1,7 @@
 package main.client;
 
-import commands.Add;
+import commands.*;
+import utils.ConsoleAdministrator;
 import utils.Serializer;
 
 import java.io.*;
@@ -9,18 +10,25 @@ import java.nio.ByteBuffer;
 
 public class Client {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        NetWork netWork = new NetWork("LocalHost", 1234);
+        NetWork netWork = new NetWork("LocalHost", 1488);
         while (true) {
-            Add add = new Add();
+            AbstractCommand command = ConsoleAdministrator.commandRequest();
             byte[] sendObjectBytes;
-            sendObjectBytes = Serializer.serializeObject(add);
-            System.out.println(sendObjectBytes);
-            netWork.getSocketOut().write(sendObjectBytes);
-            byte[] recieveObjectBytes = new byte[1000];
-            netWork.getSocketInput().read(recieveObjectBytes);
-            ByteBuffer buffer = ByteBuffer.wrap(recieveObjectBytes);
-            String string = (String) Serializer.deserializeObject(buffer);
-            System.out.println(string);
+            if(command.getName()!= CommandNames.voidCommand) {
+                if (command instanceof AddingCommand) {
+                    AddingCommand command1 = (AddingCommand) command;
+                    command1.ticketRequest();
+                    sendObjectBytes = Serializer.serializeObject(command1);
+                } else {
+                    sendObjectBytes = Serializer.serializeObject(command);
+                }
+                netWork.getSocketOut().write(sendObjectBytes);
+                byte[] recieveObjectBytes = new byte[1000];
+                netWork.getSocketInput().read(recieveObjectBytes);
+                ByteBuffer buffer = ByteBuffer.wrap(recieveObjectBytes);
+                String string = (String) Serializer.deserializeObject(buffer);
+                System.out.println(string);
+            }
         }
 
     }

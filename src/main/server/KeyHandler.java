@@ -1,5 +1,6 @@
 package main.server;
 
+import commands.AbstractCommand;
 import commands.Add;
 import commands.CommandManager;
 import utils.Serializer;
@@ -30,25 +31,22 @@ public void readKey(SelectionKey key) throws IOException, ClassNotFoundException
     SocketChannel clientChannel = (SocketChannel) key.channel();
     clientChannel.configureBlocking(false);
     buffer.clear();
-    System.out.println(buffer);
     int bytesRead;
     try {
         bytesRead = clientChannel.read(buffer);
-        System.out.println(buffer);
     } catch (IOException e) {
         key.cancel();
         clientChannel.close();
         return;
     }
-
     if (bytesRead == -1) {
         key.cancel();
         return;
     }
     buffer.flip();
-    Add add = (Add) Serializer.deserializeObject(buffer);
-    System.out.println(add);
-    String string = CommandManager.useCommand(add);
+    AbstractCommand command= (AbstractCommand) Serializer.deserializeObject(buffer);
+    System.out.println(command);
+    String string = CommandManager.useCommand(command);
     clientChannel.register(selector, SelectionKey.OP_WRITE);
     buffer1= ByteBuffer.wrap(Serializer.serializeObject(string));
 }
