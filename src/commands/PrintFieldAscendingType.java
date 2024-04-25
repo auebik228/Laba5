@@ -32,13 +32,13 @@ public class PrintFieldAscendingType extends AbstractCommand {
     @Override
     public String use() {
         LinkedList<Ticket> list = (LinkedList<Ticket>) CollectionHandler.getCollection().clone();
-        ArrayList<String> strings = new ArrayList<>();
+        String string="";
         Collections.sort(list);
         if(list.size()>0){
         for (Ticket ticket : list) {
-            strings.add("Билет с id " + ticket.getId() + " имеет тип: " + ticket.getType());
+            string += "Билет с id " + ticket.getId() + " имеет тип: " + ticket.getType() + System.lineSeparator();
         }
-            return strings.toString();
+            return string;
         }
         else {
             return "Коллекция пуста, нечего выводить.";

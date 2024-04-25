@@ -11,9 +11,15 @@ public class Serializer {
         oos.close();
         return baos.toByteArray();
     }
-    public static Object deserializeObject(ByteBuffer buffer) throws IOException, ClassNotFoundException {
+    public static Object deserializeObject(ByteBuffer buffer) throws IOException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer.array());
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        return objectInputStream.readObject();
+        Object object = null;
+        try {
+            object = objectInputStream.readObject();
+        }catch (ClassNotFoundException e){
+            System.out.println("Не удалось десериализовать обьект");
+        }
+        return object;
     }
 }

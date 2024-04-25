@@ -17,13 +17,12 @@ public class Help extends AbstractCommand {
 
     @Override
     public String use() {
-        System.out.println("Список команд");
-        ArrayList<String> strings = new ArrayList<>();
+        String string="";
         for (Map.Entry<CommandNames, AbstractCommand> entry : CommandManager.getComands().entrySet()) {
             if (entry.getKey() != CommandNames.voidCommand) {
-                strings.add(entry.getKey().toString());
+                string += entry.getKey().toString() + ": " +entry.getValue().getSpecification() + System.lineSeparator();
             }
         }
-        return strings.toString();
+        return string;
     }
 }

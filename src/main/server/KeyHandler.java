@@ -15,8 +15,8 @@ import java.nio.channels.SocketChannel;
 
 public class KeyHandler {
 private final Selector selector;
-private ByteBuffer buffer = ByteBuffer.allocate(10000);
-private ByteBuffer buffer1;
+private ByteBuffer bufferForRead = ByteBuffer.allocate(10000);
+private ByteBuffer bufferForWrite;
 public KeyHandler(Selector selector){
     this.selector = selector;
 }
@@ -30,10 +30,10 @@ public void acceptKey(SelectionKey key) throws IOException {
 public void readKey(SelectionKey key) throws IOException, ClassNotFoundException {
     SocketChannel clientChannel = (SocketChannel) key.channel();
     clientChannel.configureBlocking(false);
-    buffer.clear();
+    bufferForRead.clear();
     int bytesRead;
     try {
-        bytesRead = clientChannel.read(buffer);
+        bytesRead = clientChannel.read(bufferForRead);
     } catch (IOException e) {
         key.cancel();
         clientChannel.close();
@@ -43,18 +43,18 @@ public void readKey(SelectionKey key) throws IOException, ClassNotFoundException
         key.cancel();
         return;
     }
-    buffer.flip();
-    AbstractCommand command= (AbstractCommand) Serializer.deserializeObject(buffer);
-    System.out.println(command);
+    bufferForRead.flip();
+    AbstractCommand command= (AbstractCommand) Serializer.deserializeObject(bufferForRead);
+    System.out.println("Выполнена команда " + command.getName() + " от клиента - " + clientChannel.getLocalAddress());
     String string = CommandManager.useCommand(command);
     clientChannel.register(selector, SelectionKey.OP_WRITE);
-    buffer1= ByteBuffer.wrap(Serializer.serializeObject(string));
+    bufferForWrite= ByteBuffer.wrap(Serializer.serializeObject(string));
 }
 public void writeKey(SelectionKey key) throws IOException {
     SocketChannel clientChannel = (SocketChannel) key.channel();
     clientChannel.configureBlocking(false);
-    clientChannel.write(buffer1);
-    buffer1.clear();
+    clientChannel.write(bufferForWrite);
+    bufferForWrite.clear();
     clientChannel.register(selector, SelectionKey.OP_READ);
 }
 }

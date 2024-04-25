@@ -26,18 +26,20 @@ public class ExecuteScript extends AbstractCommand {
             Path path = Paths.get(getInputData());
             Scanner scanner = new Scanner(path);
             CommandManager.setFileMode(scanner);
+            String s = "";
             while (scanner.hasNextLine()) {
                 String[] command = scanner.nextLine().split(" ");
                 CommandManager.setCountOfUsingCommands(CommandManager.getCountOfUsingCommands() + 1);
                 if (Corrector.checkCommand(command)) {
                     if (command[0].equals("executeScript") && command[1].equals(path.toString()) | CommandManager.getCountOfUsingCommands() > 100) {
-                        return "Вы вызвали рекурсию, выполнение скрипта будет закончено.";
+                       s+= "При выполнение скрипта, произошла рекурсия, выполнение скрипта окончено.";
                     }
-                    return CommandManager.useCommand(CommandManager.createCommand(command));
+                    s+= "Выполнена команда "+ command[0] + " результат: " + CommandManager.useCommand(CommandManager.createCommand(command)) + System.lineSeparator();
                 }
             }
             CommandManager.setConsoleMode();
-            return "Выполнен скрипт из файла:" + path.toString();
+            s+="Выполнен скрипт из файла:" + path.toString();
+            return s;
 
         } catch (IOException e) {
             return "Невозможно выполнить команду так, как файл не существует или к нему нет доступа.";

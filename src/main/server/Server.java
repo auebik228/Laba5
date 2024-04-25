@@ -2,6 +2,7 @@ package main.server;
 
 import commands.Add;
 import commands.CommandManager;
+import utils.FileWorker;
 import utils.Serializer;
 
 import java.io.*;
@@ -12,7 +13,6 @@ import java.util.*;
 
 public class Server {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.configureBlocking(false);
         ServerSocket serverSocket = serverSocketChannel.socket();
@@ -20,11 +20,16 @@ public class Server {
         Selector selector = Selector.open();
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         KeyHandler keyHandler = new KeyHandler(selector);
-        System.out.println("Сервер начал на порте 1488");
+        System.out.println("Сервер начал работу на порте 1488");
+        if (args.length==1){
+            String filePath = args[0];
+            FileWorker.loadCollection(filePath);
+        }else{
+            System.out.println("Неверное количество аргументов, коллекция не загружена");
+        }
         while (true) {
             selector.select();
             Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
-            Add add;
             while (keyIterator.hasNext()) {
                 SelectionKey key = keyIterator.next();
                 keyIterator.remove();
