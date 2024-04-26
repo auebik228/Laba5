@@ -33,6 +33,7 @@ public class ExecuteScript extends AbstractCommand {
                 if (Corrector.checkCommand(command)) {
                     if (command[0].equals("executeScript") && command[1].equals(path.toString()) | CommandManager.getCountOfUsingCommands() > 100) {
                        s+= "При выполнение скрипта, произошла рекурсия, выполнение скрипта окончено.";
+                       return s;
                     }
                     s+= "Выполнена команда "+ command[0] + " результат: " + CommandManager.useCommand(CommandManager.createCommand(command)) + System.lineSeparator();
                 }

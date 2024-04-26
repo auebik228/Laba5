@@ -16,7 +16,7 @@ public class Server {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.configureBlocking(false);
         ServerSocket serverSocket = serverSocketChannel.socket();
-        serverSocket.bind(new InetSocketAddress(1488));
+        serverSocket.bind(new InetSocketAddress(1337));
         Selector selector = Selector.open();
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         KeyHandler keyHandler = new KeyHandler(selector);

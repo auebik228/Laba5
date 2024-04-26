@@ -45,7 +45,7 @@ public void readKey(SelectionKey key) throws IOException, ClassNotFoundException
     }
     bufferForRead.flip();
     AbstractCommand command= (AbstractCommand) Serializer.deserializeObject(bufferForRead);
-    System.out.println("Выполнена команда " + command.getName() + " от клиента - " + clientChannel.getLocalAddress());
+    System.out.println("Выполнена команда " + command.getName() + " от клиента - " + clientChannel.getRemoteAddress());
     String string = CommandManager.useCommand(command);
     clientChannel.register(selector, SelectionKey.OP_WRITE);
     bufferForWrite= ByteBuffer.wrap(Serializer.serializeObject(string));
