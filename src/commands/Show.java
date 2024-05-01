@@ -1,6 +1,14 @@
 package commands;
 
+import ticket.Ticket;
 import utils.CollectionHandler;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * The Show class is a subclass of AbstractCommand.
  * It represents a command that displays information about the collection.
@@ -22,7 +30,13 @@ public class Show extends AbstractCommand {
     @Override
     public String use() {
         if(CollectionHandler.getCollection().size()>0) {
-            return CollectionHandler.getCollection().toString();
+            List<Ticket> collection ;
+            collection= CollectionHandler
+                    .getCollection()
+                    .stream()
+                    .sorted()
+                    .collect(Collectors.toList());
+            return collection.toString();
 
         }else{
             return "Коллекция пуста нечего выводить.";

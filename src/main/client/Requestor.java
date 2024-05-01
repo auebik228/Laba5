@@ -1,9 +1,6 @@
 package main.client;
 
-import commands.AbstractCommand;
-import commands.AddingCommand;
-import commands.CommandNames;
-import commands.Exit;
+import commands.*;
 import utils.ConsoleAdministrator;
 import utils.Serializer;
 
@@ -26,6 +23,11 @@ public class Requestor {
         }
         if (command.getName() == CommandNames.save) {
             System.out.println("Данная команда недоступна на клиенте");
+            command = new VoidCommand();
+        }
+        if(command.getName() == CommandNames.executeScript){
+            ExecuteScript executeScript = (ExecuteScript) command;
+            executeScript.readCommandsFromFile();
         }
         if (command.getName() != CommandNames.voidCommand) {
             if (command instanceof AddingCommand) {

@@ -4,7 +4,7 @@ import ticket.Ticket;
 
 import java.io.Serializable;
 
-public abstract class AbstractCommand implements Serializable {
+public abstract class AbstractCommand implements Serializable, Cloneable  {
     protected CommandNames name;
     protected String specification;
     protected boolean mode;
@@ -45,6 +45,18 @@ public abstract class AbstractCommand implements Serializable {
     @Override
     public String toString() {
         return this.name + " : " + this.specification;
+
+    }
+
+    @Override
+    public AbstractCommand clone() {
+        AbstractCommand clone = null;
+        try {
+            clone = (AbstractCommand) super.clone();
+        } catch (CloneNotSupportedException e) {
+        }
+        // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
 
     }
 }

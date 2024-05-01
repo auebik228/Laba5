@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 public class Client {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         try {
-            NetWork netWork = new NetWork("LocalHost", 1337);
+            NetWork netWork = new NetWork("localhost", 2675);
             Requestor requestor = new Requestor(netWork);
             requestor.startQuerying();
         }catch (SocketException e){

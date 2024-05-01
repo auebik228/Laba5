@@ -5,6 +5,7 @@ import utils.Corrector;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Scanner;
 /**
  * The ExecuteScript class is a subclass of AbstractCommand.
@@ -15,36 +16,45 @@ import java.util.Scanner;
  * @since 2021-10-01
  */
 public class ExecuteScript extends AbstractCommand {
+    ArrayList<AbstractCommand> fileCommands;
     public ExecuteScript() {
         this.name = CommandNames.executeScript;
         this.specification = "Выполняет скрипт из указанного файла";
+        fileCommands = new ArrayList<AbstractCommand>();
     }
 
     @Override
     public String use() {
+            String s = "";
+            for(AbstractCommand command : fileCommands){
+
+                    s+= "Выполнена команда "+ command.getName() + " результат: " + CommandManager.useCommand(command) + System.lineSeparator();
+            }
+            s+="Выполнен скрипт из файла:" + getInputData();
+            fileCommands.clear();
+            System.out.println(fileCommands);
+            return s;
+    }
+    public void readCommandsFromFile() throws IOException {
         try {
+            fileCommands.clear();
             Path path = Paths.get(getInputData());
             Scanner scanner = new Scanner(path);
             CommandManager.setFileMode(scanner);
-            String s = "";
             while (scanner.hasNextLine()) {
                 String[] command = scanner.nextLine().split(" ");
-                CommandManager.setCountOfUsingCommands(CommandManager.getCountOfUsingCommands() + 1);
                 if (Corrector.checkCommand(command)) {
-                    if (command[0].equals("executeScript") && command[1].equals(path.toString()) | CommandManager.getCountOfUsingCommands() > 100) {
-                       s+= "При выполнение скрипта, произошла рекурсия, выполнение скрипта окончено.";
-                       return s;
+                    AbstractCommand comm = CommandManager.createCommand(command);
+                    if (comm instanceof AddingCommand) {
+                        ((AddingCommand) comm).ticketRequest();
+                        System.out.println(((AddingCommand) comm).getTicket());
                     }
-                    s+= "Выполнена команда "+ command[0] + " результат: " + CommandManager.useCommand(CommandManager.createCommand(command)) + System.lineSeparator();
+                        fileCommands.add(comm);
                 }
             }
             CommandManager.setConsoleMode();
-            s+="Выполнен скрипт из файла:" + path.toString();
-            return s;
-
-        } catch (IOException e) {
-            return "Невозможно выполнить команду так, как файл не существует или к нему нет доступа.";
+        }catch (IOException e) {
+            System.out.println( "Невозможно выполнить executeScript так, как файл не существует или к нему нет доступа.");
         }
-
     }
 }

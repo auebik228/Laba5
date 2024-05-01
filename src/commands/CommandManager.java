@@ -39,11 +39,11 @@ public class CommandManager {
     }
     public static AbstractCommand createCommand(String[] command){
         if(command.length==2) {
-            var commmand = commands.get(CommandNames.valueOf(command[0]) );
+            var commmand = commands.get(CommandNames.valueOf(command[0])).clone();
             commmand.setInputData(command[1]);
             return commmand;
         }else{
-            var commmand = commands.get(CommandNames.valueOf(command[0]));
+            var commmand = commands.get(CommandNames.valueOf(command[0])).clone();
             return commmand;
         }
     }

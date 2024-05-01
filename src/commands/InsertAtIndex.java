@@ -34,56 +34,52 @@ public class InsertAtIndex extends AddingCommand {
 
     @Override
     public String use() {
-        if (mode) {
+        if (ticket != null) {
             if (CollectionHandler.getCollection().size() - Integer.parseInt(getInputData()) > 0 && Integer.parseInt(getInputData()) >= 0) {
                 CollectionHandler.getCollection().add(Integer.parseInt(getInputData()), this.ticket);
-                return "Билет с id " + ticket.getId() + " создан на " + Integer.parseInt(getInputData()) + " индексе";
+                long id = this.ticket.getId();
+                this.ticket = null;
+                return "Билет с id " + id + " создан на " + Integer.parseInt(getInputData()) + " индексе";
             } else {
                 return "Невозможно вставить на данный индекс так как размер коллекции - " + CollectionHandler.getCollection().size();
             }
         } else {
-            ArrayList<String> ticketFields = FileWorker.readTicketFields();
-            if (CollectionHandler.getCollection().size() - Integer.parseInt(getInputData()) > 0 && Integer.parseInt(getInputData()) >= 0) {
-                if (ticketFields.size() == 10 || ticketFields.size() == 12) {
-                    try {
-                        Ticket ticket = new Ticket(Long.parseLong(ticketFields.get(0)), ticketFields.get(1),
-                                new Coordinates(Long.parseLong(ticketFields.get(2)), Integer.parseInt(ticketFields.get(3))),
-                                ZonedDateTime.parse(ticketFields.get(4)), FileWorker.parseTicketPrice(ticketFields.get(5)),
-                                FileWorker.parseTicketType(ticketFields.get(6)), new Venue(Long.parseLong(ticketFields.get(7)),
-                                ticketFields.get(8), Integer.parseInt(ticketFields.get(9)), null));
-                        if (ticketFields.size() == 12) {
-                            ticket.getVenue().setAddress(new Address(ticketFields.get(10), ticketFields.get(11)));
-                        }
-                        if (Corrector.checkTicketForCorrect(ticket)) {
-                            CollectionHandler.getCollection().add(Integer.parseInt(getInputData()), ticket);
-                            CollectionHandler.getTicketIdList().add(ticket.getId());
-                            CollectionHandler.getVenueIdList().add(ticket.getVenue().getId());
-                            return "Билет с id " + ticket.getId() + " создан.";
-                        } else {
-                            return "Данные о билете не проходят по заданным заданным в задание ограничениям";
-                        }
-                    } catch (DateTimeException | IllegalArgumentException e) {
-                        return "Некоретнные данные о билете команда insertAtIndex не будет выполнена.";
-                    }
-                } else {
-                    return "Неверное число аргументов для создания билета";
-                }
-            } else {
-                return "Невозможно вставить на данный индекс так как размер коллекции - " +
-                        CollectionHandler.getCollection().size();
-            }
+            return "Неверные данные о билете команда insertAtIndex не будет выполнена";
         }
     }
 
+
     @Override
     public void ticketRequest() {
-        ZonedDateTime time = ZonedDateTime.now();
-        long ticketId = (long) ((Math.random() + 1) * 100);
-        long venueId = (long) ((Math.random() + 1) * 100);
-        Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
-                time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
-                new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(), ConsoleAdministrator.getAdress()));
-        this.ticket=ticket;
+        if (mode) {
+            ZonedDateTime time = ZonedDateTime.now();
+            long ticketId = (long) ((Math.random() + 1) * 100);
+            long venueId = (long) ((Math.random() + 1) * 100);
+            Ticket ticket = new Ticket(ticketId, ConsoleAdministrator.getTicketName(), ConsoleAdministrator.getTicketCoordinates(),
+                    time, ConsoleAdministrator.getTicketPrice(), ConsoleAdministrator.getTicketType(),
+                    new Venue(venueId, ConsoleAdministrator.getVenueName(), ConsoleAdministrator.getVenueCapacity(),
+                            ConsoleAdministrator.getAdress()));
+            setTicket(ticket);
+        } else {
+            ArrayList<String> ticketFields = FileWorker.readTicketFields();
+            if (ticketFields.size() == 10 || ticketFields.size() == 12) {
+                try {
+                    Ticket ticket = new Ticket(Long.parseLong(ticketFields.get(0)), ticketFields.get(1),
+                            new Coordinates(Long.parseLong(ticketFields.get(2)), Integer.parseInt(ticketFields.get(3))),
+                            ZonedDateTime.parse(ticketFields.get(4)), FileWorker.parseTicketPrice(ticketFields.get(5)),
+                            FileWorker.parseTicketType(ticketFields.get(6)), new Venue(Long.parseLong(ticketFields.get(7)),
+                            ticketFields.get(8), Integer.parseInt(ticketFields.get(9)), null));
+                    if (ticketFields.size() == 12) {
+                        ticket.getVenue().setAddress(new Address(ticketFields.get(10), ticketFields.get(11)));
+                    }
+                    if (Corrector.checkTicketForCorrect(ticket)) {
+                        setTicket(ticket);
+                    }
+                } catch (DateTimeException | IllegalArgumentException e) {
+                    ticket=null;
+                }
+            }
+        }
     }
 }
 
