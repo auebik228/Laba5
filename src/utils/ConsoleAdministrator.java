@@ -5,6 +5,7 @@ import ticket.*;
 
 import java.nio.charset.CoderResult;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.PatternSyntaxException;
 
@@ -320,6 +321,25 @@ public class ConsoleAdministrator {
     }
     public static void promt(){
         System.out.print(">>");
+    }
+    public static boolean getLoginOrRegister(){
+        System.out.println("Введите login чтобы войти в аккаунт или register чтобы зарегистрироваться");
+        String s = getString();
+        if(s.equals("login")){
+            return true;
+        }
+        if(s.equals("register")){
+            return false;
+        }
+        return getLoginOrRegister();
+    }
+    public static String getLogin(){
+        System.out.println("Введите логин для вашего аккаунта");
+        return getString();
+    }
+    public static String getPassword(){
+        System.out.println("Введите пароль для вашего аккаунта");
+        return getString();
     }
 }
 

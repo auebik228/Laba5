@@ -27,6 +27,7 @@ public class Ticket implements Comparable<Ticket>, Serializable {
     private Long price; //Поле может быть null, Значение поля должно быть больше 0
     private TicketType type; //Поле может быть null
     private Venue venue; //Поле не может быть null
+    private String owner;
     public Ticket(){
 
     }
@@ -38,7 +39,6 @@ public class Ticket implements Comparable<Ticket>, Serializable {
          this.price=price;
          this.type=type;
          this.venue=venue;
-
      }
 
     public long getId() {
@@ -116,5 +116,13 @@ public class Ticket implements Comparable<Ticket>, Serializable {
     @Override
     public int compareTo(Ticket other) {
         return Long.compare(this.id, other.getId());
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

@@ -3,37 +3,39 @@ package main.server;
 import commands.Add;
 import commands.CommandManager;
 import commands.Exit;
+import utils.CollectionHandler;
+import utils.DataBaseManager;
 import utils.FileWorker;
 import utils.Serializer;
 
+import java.sql.*;
 import java.io.*;
 import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.RecursiveTask;
 
 public class Server {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        DataBaseManager.startConnection();
         serverSocketChannel.configureBlocking(false);
         ServerSocket serverSocket = serverSocketChannel.socket();
         try {
             serverSocket.bind(new InetSocketAddress(2675));
             System.out.println("Сервер начал работу на порте 2675");
-        }catch (BindException e){
+        } catch (BindException e) {
             System.out.println("Порт занят не удалось запустить сервер");
             new Exit().use();
         }
         Selector selector = Selector.open();
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         KeyHandler keyHandler = new KeyHandler(selector);
-
-        if (args.length==1){
-            String filePath = args[0];
-            FileWorker.loadCollection(filePath);
-        }else{
-            System.out.println("Неверное количество аргументов, коллекция не загружена");
-        }
+        FileWorker.loadCollection(DataBaseManager.getConnection());
         while (true) {
             selector.select();
             Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();

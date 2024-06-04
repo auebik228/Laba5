@@ -32,6 +32,7 @@ public class CommandManager {
         commands.put(CommandNames.insertAtIndex, new InsertAtIndex());
         commands.put(CommandNames.update, new Update());
         commands.put(CommandNames.executeScript, new ExecuteScript());
+        commands.put(CommandNames.exitAccount, new ExitAccount());
     }
 
     static public String useCommand(AbstractCommand abstractCommand) {

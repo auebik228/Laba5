@@ -13,9 +13,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.regex.Pattern;
 /**
  * The FileWorker class is responsible for loading and saving the collection of tickets from/to a file.
@@ -35,38 +42,54 @@ import java.util.regex.Pattern;
 public class FileWorker {
     private static Scanner scannerForRead;
 
-    public static void loadCollection(String filePath) {
-        Path path = Paths.get(filePath);
-        Scanner scan = null;
+    public static void loadCollection(Connection connection) {
+        String selectTickets = "SELECT * FROM ticket";
+        String selectVenue = "SELECT * FROM venue WHERE id = ?";
+        String selectCoordinates = "SELECT * FROM coordinates WHERE id = ?";
+        String selectAddress = "SELECT * FROM address WHERE id = ?";
         try {
-            LinkedList<Ticket> ticketsForInputs;
-            scan = new Scanner(path);
-            scan.useDelimiter("\\Z");
-            String s = scan.next();
-            GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(java.time.ZonedDateTime.class, new ZonedDateTimeAdapter());
-            Gson gson = builder.create();
-            ticketsForInputs = gson.fromJson(s, new TypeToken<LinkedList<Ticket>>() {
-            }.getType());
-            int k = 0;
-            for (Ticket ticketForInput : ticketsForInputs) {
-                if (Corrector.checkTicketForCorrect(ticketForInput)) {
-                    Ticket ticket = new Ticket(ticketForInput.getId(), ticketForInput.getName(), ticketForInput.getCoordinates(), ticketForInput.getCreationDate(), ticketForInput.getPrice(), ticketForInput.getType(), ticketForInput.getVenue());
-                    CollectionHandler.getCollection().add(ticket);
-                    CollectionHandler.getTicketIdList().add(ticket.getId());
-                    CollectionHandler.getVenueIdList().add(ticket.getVenue().getId());
-                } else {
-                    System.out.println("Билет номер " + k + " не будет добавлен так как данные не проходят по ограничениям");
-                }
-                k++;
-            }
-            System.out.println("Колекция загружена.");
-        } catch (IOException e) {
-            System.out.println("Указан неверный путь");
-        } catch (IllegalArgumentException | JsonSyntaxException e) {
-            System.out.println("Проверьте файл на правильность");
-        }
+            PreparedStatement pstmSelectTickets = connection.prepareStatement(selectTickets);
+            ResultSet tickets = pstmSelectTickets.executeQuery();
+            while (tickets.next()){
+                Ticket ticket = new Ticket();
+                Long ticketId = tickets.getLong(1);
+                Long venueId = tickets.getLong(7);
+                ticket.setId(tickets.getLong(1));
+                ticket.setName(tickets.getString(2));
+                ticket.setCreationDate(LocalDateTime.parse(tickets.getTimestamp(4).toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")).atZone(ZoneId.of("UTC")));
+                ticket.setPrice((long) tickets.getInt(5));
+                ticket.setType(TicketType.valueOf(tickets.getString(6)));
+                ticket.setOwner(tickets.getString(8));
 
+                PreparedStatement pstmSelectCoordinates = connection.prepareStatement(selectCoordinates);
+                pstmSelectCoordinates.setInt(1,tickets.getInt(3));
+                ResultSet coordinates = pstmSelectCoordinates.executeQuery();
+                coordinates.next();
+                ticket.setCoordinates(new Coordinates(coordinates.getLong(2), coordinates.getInt(3)));
+
+                PreparedStatement pstmSelectVenue = connection.prepareStatement(selectVenue);
+                pstmSelectVenue.setInt(1,tickets.getInt(7));
+                ResultSet venues = pstmSelectVenue.executeQuery();
+                venues.next();
+                Integer adressId = venues.getInt(4);
+                ticket.setVenue(new Venue(venues.getLong(1), venues.getString(2), venues.getInt(3), null));
+                if(adressId != 0){
+                    PreparedStatement pstmSelectAddress = connection.prepareStatement(selectAddress);
+                    pstmSelectAddress.setInt(1,adressId);
+                    ResultSet addreses = pstmSelectAddress.executeQuery();
+                    addreses.next();
+                    ticket.getVenue().setAddress(new Address(addreses.getString(2), addreses.getString(3)));
+                }
+                CollectionHandler.getCollection().add(ticket);
+                CollectionHandler.getTicketIdList().add(ticketId);
+                CollectionHandler.getVenueIdList().add(venueId);
+
+            }
+            System.out.println("Коллекция успешно загружена");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Ошибка при загрузке коллекции");
+        }
     }
 
     public static String saveCollection(File file) {

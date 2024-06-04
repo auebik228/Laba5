@@ -55,16 +55,20 @@ public class Update extends AddingCommand {
             long ticketId = Long.parseLong(getInputData());
             long venueId = (long) ((Math.random() + 1) * 100);
             Ticket t = CollectionHandler.getCollection().get(CollectionHandler.findIndexById(ticketId));
-            t.setName(this.ticket.getName());
-            t.setCoordinates(this.ticket.getCoordinates());
-            t.setCreationDate(this.ticket.getCreationDate());
-            t.setPrice(this.ticket.getPrice());
-            t.setType(this.ticket.getType());
-            t.getVenue().setId(this.ticket.getVenue().getId());
-            t.getVenue().setName(this.ticket.getVenue().getName());
-            t.getVenue().setCapacity(this.ticket.getVenue().getCapacity());
-            t.getVenue().setAddress(this.ticket.getVenue().getAddress());
-            this.ticket = null;
+            if (t.getOwner().equals(getUser())) {
+                t.setName(this.ticket.getName());
+                t.setCoordinates(this.ticket.getCoordinates());
+                t.setCreationDate(this.ticket.getCreationDate());
+                t.setPrice(this.ticket.getPrice());
+                t.setType(this.ticket.getType());
+                t.getVenue().setId(this.ticket.getVenue().getId());
+                t.getVenue().setName(this.ticket.getVenue().getName());
+                t.getVenue().setCapacity(this.ticket.getVenue().getCapacity());
+                t.getVenue().setAddress(this.ticket.getVenue().getAddress());
+                this.ticket = null;
+            }else{
+                return "Нельзя обновлять этот билет, он не ваш";
+            }
             return "Данные билета с id - " + t.getId() + " обновлены";
         } else {
             return "Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.";

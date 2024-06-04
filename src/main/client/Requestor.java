@@ -1,6 +1,7 @@
 package main.client;
 
 import commands.*;
+import utils.CollectionHandler;
 import utils.ConsoleAdministrator;
 import utils.Serializer;
 
@@ -16,7 +17,7 @@ public class Requestor {
         this.netWork = netWork;
     }
 
-    private boolean sendRequest() throws IOException {
+    private boolean sendRequest(String user) throws IOException {
         AbstractCommand command = ConsoleAdministrator.commandRequest();
         if (command.getName() == CommandNames.exit) {
             new Exit().use();
@@ -24,6 +25,11 @@ public class Requestor {
         if (command.getName() == CommandNames.save) {
             System.out.println("Данная команда недоступна на клиенте");
             command = new VoidCommand();
+        }
+        if (command.getName() == CommandNames.exitAccount){
+            CommandManager.useCommand(command);
+            System.out.println("Вы вышли из аккаунта, без аккаунта нельзя работать");
+            return false;
         }
         if(command.getName() == CommandNames.executeScript){
             ExecuteScript executeScript = (ExecuteScript) command;
@@ -33,8 +39,11 @@ public class Requestor {
             if (command instanceof AddingCommand) {
                 AddingCommand command1 = (AddingCommand) command;
                 command1.ticketRequest();
+                command1.getTicket().setOwner(user);
+                command1.setUser(user);
                 requestBytes = Serializer.serializeObject(command1);
             } else {
+                command.setUser(user);
                 requestBytes = Serializer.serializeObject(command);
             }
             netWork.getSocketOut().write(requestBytes);
@@ -50,15 +59,14 @@ public class Requestor {
         return string;
     }
 
-    public void startQuerying() throws IOException {
+    public void query(String user) throws IOException {
         boolean t;
         String s;
-        while (true) {
-            t = sendRequest();
+            t = sendRequest(user);
             if (t == true) {
                 s = getAnswer();
                 System.out.println(s);
-            }
         }
     }
+
 }

@@ -38,6 +38,7 @@ public enum CommandNames {
     removeByPrice,
     printTypes,
     sort,
-    voidCommand
+    voidCommand,
+    exitAccount
 
 }

@@ -3,6 +3,7 @@ package commands;
 import ticket.Ticket;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 
 public abstract class AbstractCommand implements Serializable, Cloneable  {
     protected CommandNames name;
@@ -10,6 +11,7 @@ public abstract class AbstractCommand implements Serializable, Cloneable  {
     protected boolean mode;
     private String argument;
     private Ticket ticket;
+    private String user;
 
     public CommandNames getName() {
         return name;
@@ -58,5 +60,13 @@ public abstract class AbstractCommand implements Serializable, Cloneable  {
         // TODO: copy mutable state here, so the clone can't change the internals of the original
             return clone;
 
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

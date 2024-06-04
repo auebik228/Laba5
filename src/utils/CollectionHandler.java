@@ -1,11 +1,14 @@
 package utils;
 import ticket.Ticket;
+
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Deque;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The CollectionHandler class is responsible for managing the collection of tickets.
@@ -26,7 +29,7 @@ import java.util.List;
 
 
 public class CollectionHandler {
-    private static LinkedList<Ticket> ticketList = new LinkedList<>();
+    private static List<Ticket> ticketList = Collections.synchronizedList(new LinkedList<>());
     private static ArrayList<Long> ticketIdList = new ArrayList<Long>();
     private static ArrayList<Long> venueIdList = new ArrayList<Long>();
     private final static ZonedDateTime collectionCreateTime=ZonedDateTime.now();
@@ -36,7 +39,7 @@ public class CollectionHandler {
      *
      * @return the collection of tickets as a LinkedList<Ticket>
      */
-    public static LinkedList<Ticket> getCollection() {
+    public static List<Ticket> getCollection() {
         return ticketList;
     }
     /**
@@ -79,5 +82,4 @@ public class CollectionHandler {
         }
         return 0;
     }
-
 }

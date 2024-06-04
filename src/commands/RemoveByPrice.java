@@ -1,6 +1,14 @@
 package commands;
 
+import ticket.Ticket;
 import utils.CollectionHandler;
+import utils.DataBaseManager;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * The RemoveByPrice class is a command that removes an element from the collection based on its price.
  * It extends the AbstractCommand class and implements the use() method.
@@ -26,15 +34,25 @@ public class RemoveByPrice extends AbstractCommand {
 
     @Override
     public String use() {
-        for (int i = 0; i < CollectionHandler.getCollection().size(); i++) {
-            if (CollectionHandler.getCollection().get(i).getPrice() == Long.parseLong(this.getInputData())) {
-                CollectionHandler.getTicketIdList().remove(CollectionHandler.getCollection().get(i).getId());
-                CollectionHandler.getVenueIdList().remove(CollectionHandler.getCollection().get(i).getVenue().getId());
-                CollectionHandler.getCollection().remove(i);
-               return "Элемент с ценой " + this.getInputData() + " удален.";
-            }
+        long price = Long.parseLong(this.getInputData());
+        List<Ticket> ticketsToRemove = CollectionHandler.getCollection().parallelStream()
+                .filter(element -> element.getPrice() == price && element.getOwner().equals(getUser()))
+                .toList();
+        for (Ticket ticket : ticketsToRemove) {
+                CollectionHandler.getTicketIdList().remove(ticket.getId());
+                CollectionHandler.getVenueIdList().remove(ticket.getVenue().getId());
+                CollectionHandler.getCollection().remove(ticket);
+                try {
+                    DataBaseManager.deleteTicket((int) ticket.getId());
+                } catch (SQLException e) {
+                    return "Проблемы с базой данных";
+                }
+        }
+        if (ticketsToRemove.isEmpty()) {
+            return "Элементы с ценой " + this.getInputData() + " не найдены.";
+        } else {
+            return "Элементы с ценой " + this.getInputData() + " удалены.";
         }
 
-            return "Элемента с такой ценой нет.";
     }
 }

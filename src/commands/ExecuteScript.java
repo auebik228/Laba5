@@ -27,12 +27,15 @@ public class ExecuteScript extends AbstractCommand {
     public String use() {
             String s = "";
             for(AbstractCommand command : fileCommands){
-
-                    s+= "Выполнена команда "+ command.getName() + " результат: " + CommandManager.useCommand(command) + System.lineSeparator();
+                if(command.getName() == CommandNames.executeScript && command.getInputData().equals(getInputData())){
+                    s+= "Команда вызыва скрипта хотела создать рекрсию" + "\n";
+                }
+                else {
+                    s += "Выполнена команда " + command.getName() + " результат: " + CommandManager.useCommand(command) + "\n";
+                }
             }
             s+="Выполнен скрипт из файла:" + getInputData();
             fileCommands.clear();
-            System.out.println(fileCommands);
             return s;
     }
     public void readCommandsFromFile() throws IOException {
@@ -47,7 +50,6 @@ public class ExecuteScript extends AbstractCommand {
                     AbstractCommand comm = CommandManager.createCommand(command);
                     if (comm instanceof AddingCommand) {
                         ((AddingCommand) comm).ticketRequest();
-                        System.out.println(((AddingCommand) comm).getTicket());
                     }
                         fileCommands.add(comm);
                 }

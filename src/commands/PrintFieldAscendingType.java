@@ -6,6 +6,8 @@ import utils.CollectionHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+
 /**
  * The PrintFieldAscendingType class is a subclass of AbstractCommand.
  * It represents a command that prints the values of the 'type' field of all elements in the collection in ascending order.
@@ -31,11 +33,10 @@ public class PrintFieldAscendingType extends AbstractCommand {
 
     @Override
     public String use() {
-        LinkedList<Ticket> list = (LinkedList<Ticket>) CollectionHandler.getCollection().clone();
+
         String string="";
-        Collections.sort(list);
-        if(list.size()>0){
-        for (Ticket ticket : list) {
+        if(!CollectionHandler.getCollection().isEmpty()){
+        for (Ticket ticket : CollectionHandler.getCollection()) {
             string += "Билет с id " + ticket.getId() + " имеет тип: " + ticket.getType() + System.lineSeparator();
         }
             return string;

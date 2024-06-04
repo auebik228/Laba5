@@ -1,11 +1,9 @@
 package commands;
 
 import ticket.*;
-import utils.CollectionHandler;
-import utils.ConsoleAdministrator;
-import utils.Corrector;
-import utils.FileWorker;
+import utils.*;
 
+import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -35,15 +33,21 @@ public class Add extends AddingCommand {
 
     @Override
     public String use() {
-
         if (ticket!=null) {
-            CollectionHandler.getCollection().add(getTicket());
-            CollectionHandler.getTicketIdList().add(getTicket().getId());
-            CollectionHandler.getTicketIdList().add(getTicket().getId());
-            long id = this.ticket.getId();
-            this.ticket = null;
-
-            return "Билет с id " + id + " создан.";
+            try {
+                String[] ticketAndVenueId = DataBaseManager.addTicket(ticket);
+                ticket.setId(Long.parseLong(ticketAndVenueId[1]));
+                ticket.getVenue().setId(Long.parseLong(ticketAndVenueId[0]));
+                CollectionHandler.getCollection().add(ticket);
+                CollectionHandler.getTicketIdList().add(ticket.getId());
+                CollectionHandler.getVenueIdList().add(ticket.getVenue().getId());
+                long id = this.ticket.getId();
+                this.ticket = null;
+                return "Билет с id " + id + " создан.";
+            }catch (SQLException e){
+                e.printStackTrace();
+                return "Не удалось добавить билет в базу данных";
+            }
         }else {
             return "Неверные данные о билете команда add не будет выполнена";
         }

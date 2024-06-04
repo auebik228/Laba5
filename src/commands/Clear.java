@@ -1,8 +1,11 @@
 package commands;
 
+import ticket.Ticket;
 import utils.CollectionHandler;
 import utils.ConsoleAdministrator;
+import utils.DataBaseManager;
 
+import java.sql.SQLException;
 import java.util.logging.ConsoleHandler;
 
 /**
@@ -28,12 +31,23 @@ public class Clear extends AbstractCommand {
     }
 
     @Override
-    public String use() {
+    public String use()  {
         if(CollectionHandler.getCollection().size()>0) {
-            CollectionHandler.getCollection().clear();
-            CollectionHandler.getVenueIdList().clear();
-            CollectionHandler.getTicketIdList().clear();
-            return "Коллекция очищена.";
+            try {
+                synchronized (CollectionHandler.getCollection()) {
+                    DataBaseManager.deleteAllTickets(getUser());
+                    for (Ticket ticket : CollectionHandler.getCollection()) {
+                        if (ticket.getOwner().equals(getUser())) {
+                            CollectionHandler.getCollection().remove(ticket);
+                            CollectionHandler.getTicketIdList().remove(ticket.getId());
+                            CollectionHandler.getVenueIdList().remove(ticket.getVenue().getId());
+                        }
+                    }
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                return "Ошибка с базой данных при попытке удаления";
+            }
+            return "Созданные вами билеты удалены";
         }else{
             return "В коллекции нет элементов, нечего очищать";
         }

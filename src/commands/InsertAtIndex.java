@@ -4,11 +4,9 @@ import ticket.Address;
 import ticket.Coordinates;
 import ticket.Ticket;
 import ticket.Venue;
-import utils.CollectionHandler;
-import utils.ConsoleAdministrator;
-import utils.Corrector;
-import utils.FileWorker;
+import utils.*;
 
+import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -36,10 +34,19 @@ public class InsertAtIndex extends AddingCommand {
     public String use() {
         if (ticket != null) {
             if (CollectionHandler.getCollection().size() - Integer.parseInt(getInputData()) > 0 && Integer.parseInt(getInputData()) >= 0) {
-                CollectionHandler.getCollection().add(Integer.parseInt(getInputData()), this.ticket);
-                long id = this.ticket.getId();
-                this.ticket = null;
-                return "Билет с id " + id + " создан на " + Integer.parseInt(getInputData()) + " индексе";
+                String[] ticketAndVenueId = new String[0];
+                try {
+                    ticketAndVenueId = DataBaseManager.addTicket(ticket);
+                    ticket.setId(Long.parseLong(ticketAndVenueId[0]));
+                    ticket.getVenue().setId(Long.parseLong(ticketAndVenueId[1]));
+                    CollectionHandler.getCollection().add(ticket);
+                    CollectionHandler.getTicketIdList().add(ticket.getId());
+                    CollectionHandler.getVenueIdList().add(ticket.getVenue().getId());
+                    long id = this.ticket.getId();
+                    return "Билет с id " + id + " создан на " + Integer.parseInt(getInputData()) + " индексе";
+                }catch (SQLException e) {
+                    return "Ошибка при работе с базой данных";
+                }
             } else {
                 return "Невозможно вставить на данный индекс так как размер коллекции - " + CollectionHandler.getCollection().size();
             }

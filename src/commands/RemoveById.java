@@ -2,7 +2,9 @@ package commands;
 
 import ticket.Ticket;
 import utils.CollectionHandler;
+import utils.DataBaseManager;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 public class RemoveById extends AbstractCommand{
@@ -39,15 +41,30 @@ public class RemoveById extends AbstractCommand{
     @Override
 
     public String use() {
-        for (int i = 0; i < CollectionHandler.getCollection().size(); i++) {
-            if (CollectionHandler.getCollection().get(i).getId() == Long.parseLong(this.getInputData())) {
-                CollectionHandler.getTicketIdList().remove(CollectionHandler.getCollection().get(i).getId());
-                CollectionHandler.getVenueIdList().remove(CollectionHandler.getCollection().get(i).getVenue().getId());
-                CollectionHandler.getCollection().remove(i);
-                return "Элемент с id " + this.getInputData() + " удален.";
+        try {
+            long inputId = Long.parseLong(this.getInputData());
+            Ticket ticketToRemove = CollectionHandler.getCollection().parallelStream()
+                    .filter(ticket -> ticket.getId() == Long.parseLong(getInputData()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (ticketToRemove == null) {
+                return "Элемента с таким id нет.";
             }
+            if (ticketToRemove.getOwner().equals(getUser())) {
+                DataBaseManager.deleteTicket((int) ticketToRemove.getId());
+                CollectionHandler.getTicketIdList().remove(ticketToRemove.getId());
+                CollectionHandler.getVenueIdList().remove(ticketToRemove.getVenue().getId());
+                CollectionHandler.getCollection().remove(ticketToRemove);
+                return "Элемент с id " + inputId + " удален.";
+            }else{
+                return "Вы не можете удалить этот билет, не вы его создавали";
+            }
+        } catch (NumberFormatException e) {
+            return "Некорректный формат id. Пожалуйста, введите числовой id.";
+        } catch (SQLException e) {
+            return "Ошибка при работе с базой данных.";
         }
-           return "Элемента с таким id нет.";
     }
 
 }
