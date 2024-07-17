@@ -4,12 +4,10 @@ import ticket.Address;
 import ticket.Coordinates;
 import ticket.Ticket;
 import ticket.Venue;
-import utils.CollectionHandler;
-import utils.ConsoleAdministrator;
-import utils.Corrector;
-import utils.FileWorker;
+import utils.*;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -49,35 +47,41 @@ public class Update extends AddingCommand {
 
     @Override
     public String use() {
-    if (ticket!=null) {
-        if (CollectionHandler.getTicketIdList().contains(Long.parseLong(getInputData()))) {
-            ZonedDateTime time = ZonedDateTime.now();
-            long ticketId = Long.parseLong(getInputData());
-            long venueId = (long) ((Math.random() + 1) * 100);
-            Ticket t = CollectionHandler.getCollection().get(CollectionHandler.findIndexById(ticketId));
-            if (t.getOwner().equals(getUser())) {
-                t.setName(this.ticket.getName());
-                t.setCoordinates(this.ticket.getCoordinates());
-                t.setCreationDate(this.ticket.getCreationDate());
-                t.setPrice(this.ticket.getPrice());
-                t.setType(this.ticket.getType());
-                t.getVenue().setId(this.ticket.getVenue().getId());
-                t.getVenue().setName(this.ticket.getVenue().getName());
-                t.getVenue().setCapacity(this.ticket.getVenue().getCapacity());
-                t.getVenue().setAddress(this.ticket.getVenue().getAddress());
-                this.ticket = null;
-            }else{
-                return "Нельзя обновлять этот билет, он не ваш";
-            }
-            return "Данные билета с id - " + t.getId() + " обновлены";
-        } else {
-            return "Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.";
+        if (ticket != null) {
+            if (CollectionHandler.getTicketIdList().contains(Long.parseLong(getInputData()))) {
+                    ZonedDateTime time = ZonedDateTime.now();
+                    long ticketId = Long.parseLong(getInputData());
+                    long venueId = (long) ((Math.random() + 1) * 100);
+                    Ticket t = CollectionHandler.getCollection().get(CollectionHandler.findIndexById(ticketId));
+                    if (t.getOwner().equals(getUser())) {
+                        t.setName(this.ticket.getName());
+                        t.setCoordinates(this.ticket.getCoordinates());
+                        t.setCreationDate(this.ticket.getCreationDate());
+                        t.setPrice(this.ticket.getPrice());
+                        t.setType(this.ticket.getType());
+                        t.getVenue().setId(this.ticket.getVenue().getId());
+                        t.getVenue().setName(this.ticket.getVenue().getName());
+                        t.getVenue().setCapacity(this.ticket.getVenue().getCapacity());
+                        t.getVenue().setAddress(this.ticket.getVenue().getAddress());
+                        try {
+                            DataBaseManager.updateTicket(ticketId,t);
+                        } catch (SQLException e) {
+                            return "Ошибка с базой данных";
+                        }
+                        this.ticket = null;
+                    } else {
+                        return "Нельзя обновлять этот билет, он не ваш";
+                    }
+                    return "Данные билета с id - " + t.getId() + " обновлены";
+            } else {
+                return "Невозможно обновить билет с id - " + Long.parseLong(getInputData()) + " так как его не существует.";
 
+            }
+        } else {
+            return "Неверные данные о билете команда update не будет выполнена";
         }
-    }else{
-        return "Неверные данные о билете команда update не будет выполнена";
     }
-    }
+
 
     @Override
     public void ticketRequest() {
@@ -106,7 +110,7 @@ public class Update extends AddingCommand {
                         setTicket(ticket);
                     }
                 } catch (DateTimeException | IllegalArgumentException e) {
-                    ticket=null;
+                    ticket = null;
                 }
             }
         }

@@ -1,9 +1,10 @@
 package main.client;
 
 import commands.*;
-import utils.CollectionHandler;
-import utils.ConsoleAdministrator;
-import utils.Serializer;
+import graphic.TicketPanel;
+import graphic.TicketTable;
+import ticket.Ticket;
+import utils.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -51,6 +52,26 @@ public class Requestor {
         }
         return false;
     }
+    private boolean sendRequest(String user, String[] comm, Ticket ticket) throws IOException {
+        AbstractCommand command = CommandManager.createCommand(comm);
+        if(command.getName() == CommandNames.executeScript){
+            ExecuteScript executeScript = (ExecuteScript) command;
+            executeScript.readCommandsFromFile();
+        }
+            if (command instanceof AddingCommand) {
+                AddingCommand command1 = (AddingCommand) command;
+                command1.setTicket(ticket);
+                command1.getTicket().setOwner(user);
+                command1.setUser(user);
+                requestBytes = Serializer.serializeObject(command1);
+            } else {
+                command.setUser(user);
+                requestBytes = Serializer.serializeObject(command);
+            }
+            netWork.getSocketOut().write(requestBytes);
+            return true;
+        }
+
 
     private String getAnswer() throws IOException {
         netWork.getSocketInput().read(answerBytes);
@@ -67,6 +88,19 @@ public class Requestor {
                 s = getAnswer();
                 System.out.println(s);
         }
+        Client.updateDataForGraphic();
     }
+    public String queryForGraphic(String user, String[] comm, Ticket ticket) throws IOException {
+        boolean t;
+        String s;
+        t = sendRequest(user, comm, ticket);
+        if (t == true) {
+            s = getAnswer();
+            return s;
+        }
+        Client.updateDataForGraphic();
+        return null;
+    }
+
 
 }

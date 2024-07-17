@@ -1,23 +1,26 @@
 package main.server;
 
-import commands.Add;
-import commands.CommandManager;
 import commands.Exit;
+import commands.RemoveById;
+import graphic.TicketTable;
+import ticket.Coordinates;
+import ticket.Ticket;
+import ticket.TicketType;
+import ticket.Venue;
 import utils.CollectionHandler;
 import utils.DataBaseManager;
 import utils.FileWorker;
-import utils.Serializer;
+import graphic.TicketPanel;
 
-import java.sql.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
-import java.nio.*;
 import java.nio.channels.*;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveAction;
-import java.util.concurrent.RecursiveTask;
 
 public class Server {
     public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
@@ -36,6 +39,7 @@ public class Server {
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         KeyHandler keyHandler = new KeyHandler(selector);
         FileWorker.loadCollection(DataBaseManager.getConnection());
+        System.out.println("Коллекция успешно загружена");
         while (true) {
             selector.select();
             Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();

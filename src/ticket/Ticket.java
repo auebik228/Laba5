@@ -19,7 +19,7 @@ import java.io.Serializable;
  * @author [Your Name]
  * @version [Date]
  */
-public class Ticket implements Comparable<Ticket>, Serializable {
+public class Ticket implements Comparable<Ticket>, Serializable, Cloneable{
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -110,6 +110,7 @@ public class Ticket implements Comparable<Ticket>, Serializable {
                 ", price=" + price +
                 ", type=" + type +
                 ", venue=" + venue +
+                ",owner=" + owner +
                 '}';
     }
 

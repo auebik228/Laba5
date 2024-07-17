@@ -22,7 +22,7 @@ public class LoginRegisterFrame extends JFrame {
             return;
         }
         setIsOpen(true);
-        setTitle("Login and Registration");
+        setTitle("Authorization window");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -62,7 +62,7 @@ public class LoginRegisterFrame extends JFrame {
                     String password384 = Serializer.sha384Hash(password);
                     try {
                         if (DataBaseManager.validateUser(login, password384)) {
-                            JOptionPane.showMessageDialog(LoginRegisterFrame.this, "Успешная авторизация");
+                            JOptionPane.showMessageDialog(LoginRegisterFrame.this, "Успешная аутентификация");
                             Client.setIsAuthorisated(true);
                             setIsOpen(false);
                             Client.setCurrentUser(login);
@@ -140,6 +140,7 @@ public class LoginRegisterFrame extends JFrame {
                         System.out.println("Пользователь успешно добавлен");
                         Client.setCurrentUser(login);
                         Client.setIsAuthorisated(true);
+                        isOpen = false;
                         dispose();
                     } catch (SQLException | ClassNotFoundException a) {
                         System.out.println("Не удалось добавить пользователя - либо такой пользователь уже существует либо проблемы с базой данных");

@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class CollectionHandler {
-    private static List<Ticket> ticketList = Collections.synchronizedList(new LinkedList<>());
+    private static List<Ticket> ticketList = new CopyOnWriteArrayList<Ticket>();
     private static ArrayList<Long> ticketIdList = new ArrayList<Long>();
     private static ArrayList<Long> venueIdList = new ArrayList<Long>();
     private final static ZonedDateTime collectionCreateTime=ZonedDateTime.now();

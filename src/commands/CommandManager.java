@@ -22,7 +22,6 @@ public class CommandManager {
         commands.put(CommandNames.show, new Show());
         commands.put(CommandNames.info, new Info());
         commands.put(CommandNames.removeById, new RemoveById());
-        commands.put(CommandNames.save, new Save());
         commands.put(CommandNames.sort, new Sort());
         commands.put(CommandNames.shuffle, new Shuffle());
         commands.put(CommandNames.voidCommand, new VoidCommand());

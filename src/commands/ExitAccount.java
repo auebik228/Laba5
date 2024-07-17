@@ -14,6 +14,8 @@ public class ExitAccount extends AbstractCommand{
     @Override
     public String use() {
         Client.setIsAuthorisated(true);
+        Client.setCurrentUser("");
+        System.out.println("Вы вышли из акканута");
         return null;
     }
 }

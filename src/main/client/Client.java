@@ -2,11 +2,12 @@ package main.client;
 
 import commands.*;
 import graphic.LoginRegisterFrame;
-import utils.ConsoleAdministrator;
-import utils.DataBaseManager;
-import utils.Serializer;
+import graphic.TicketPanel;
+import graphic.TicketTable;
+import utils.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.sql.SQLException;
@@ -14,11 +15,29 @@ import java.sql.SQLException;
 public class Client {
     private static volatile boolean isAuthorisated = false;
     private static String currentUser;
+    private static TicketTable table;
+    private static TicketPanel ticketPanel;
+    private  static Frame mainFrame;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         try {
             NetWork netWork = new NetWork("localhost", 2675);
             Requestor requestor = new Requestor(netWork);
+            DataBaseManager.startConnection();
+            FileWorker.loadCollection(DataBaseManager.getConnection());
+            table = new TicketTable(CollectionHandler.getCollection(),requestor);
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                table.setVisible(false);
+            });
+            JFrame frame = new JFrame("Ticket Visualizer");
+            ticketPanel = new TicketPanel(CollectionHandler.getCollection(),requestor);
+            frame.add(ticketPanel);
+            frame.pack();
+            frame.setSize(800,600);
+            frame.setResizable(false);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(false);
+            mainFrame = frame;
             while (true) {
                 if (!isAuthorisated) {
                     if (!LoginRegisterFrame.getIsOpen()) {
@@ -26,12 +45,16 @@ public class Client {
                         Thread.sleep(100);// задержка в 500 миллисекунд
                     }
                 } else {
+                    table.setVisible(true);
+                    frame.setVisible(true);
                     requestor.query(currentUser);
                 }
             }
         } catch (SocketException  e) {
             System.out.println("Сервер завершил работу, клиент тоже завершает");
             new Exit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -71,4 +94,34 @@ public class Client {
     public static void setCurrentUser(String s){
         currentUser = s;
     }
+    public static String getCurrentUser(){
+        return currentUser;
+    }
+    public static void updateDataForGraphic() {
+        CollectionHandler.getCollection().clear();
+        FileWorker.loadCollection(DataBaseManager.getConnection());
+        ticketPanel.updateTableData(CollectionHandler.getCollection());
+        table.updateTableData(CollectionHandler.getCollection());
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ticketPanel);
+            if (frame != null) {
+                frame.setTitle(LanguageManager.getString("title"));
+                frame.repaint();
+            }
+        });
+    }
+    public static void logout() {
+        isAuthorisated = false;
+        currentUser = null;
+
+        // Закрываем текущие окна
+        if (table != null) {
+            table.dispose();
+        }
+        if (ticketPanel != null) {
+            mainFrame.dispose();
+        }
+        SwingUtilities.invokeLater(() -> new LoginRegisterFrame().setVisible(true));
+    }
+
 }

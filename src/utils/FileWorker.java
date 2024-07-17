@@ -17,10 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -56,7 +53,15 @@ public class FileWorker {
                 Long venueId = tickets.getLong(7);
                 ticket.setId(tickets.getLong(1));
                 ticket.setName(tickets.getString(2));
-                ticket.setCreationDate(LocalDateTime.parse(tickets.getTimestamp(4).toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")).atZone(ZoneId.of("UTC")));
+                try {
+                    ticket.setCreationDate(LocalDateTime.parse(tickets.getTimestamp(4).toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")).atZone(ZoneId.of("UTC")));
+                }catch (DateTimeException e ){
+                    try {
+                        ticket.setCreationDate(LocalDateTime.parse(tickets.getTimestamp(4).toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSS")).atZone(ZoneId.of("UTC")));
+                    }catch (DateTimeException exception) {
+                        ticket.setCreationDate(LocalDateTime.parse(tickets.getTimestamp(4).toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSS")).atZone(ZoneId.of("UTC")));
+                    }
+                }
                 ticket.setPrice((long) tickets.getInt(5));
                 ticket.setType(TicketType.valueOf(tickets.getString(6)));
                 ticket.setOwner(tickets.getString(8));
@@ -85,27 +90,12 @@ public class FileWorker {
                 CollectionHandler.getVenueIdList().add(venueId);
 
             }
-            System.out.println("Коллекция успешно загружена");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Ошибка при загрузке коллекции");
         }
     }
 
-    public static String saveCollection(File file) {
-        try {
-            FileOutputStream writer = new FileOutputStream(file);
-            GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(java.time.ZonedDateTime.class, new ZonedDateTimeAdapter());
-            Gson gson = builder.create();
-            String s = gson.toJson(CollectionHandler.getCollection());
-            writer.write(s.getBytes());
-            return "Коллекция сохранена в файл с названием - " + file + ".";
-        } catch (IOException e) {
-            return "Неверное имя файла или файл не может быть открыт или не может быть создан.";
-        }
-
-    }
 
     public static void setScannerForRead(Scanner scanner) {
         scannerForRead = scanner;

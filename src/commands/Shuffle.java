@@ -1,8 +1,15 @@
 package commands;
 
+import ticket.Coordinates;
+import ticket.Ticket;
 import utils.CollectionHandler;
+import utils.DataBaseManager;
 
+import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
+
 /**
  * The Shuffle class is a subclass of AbstractCommand.
  * It represents a command that shuffles the collection of tickets.
@@ -24,7 +31,14 @@ public class Shuffle extends AbstractCommand {
     @Override
     public String use() {
         if (CollectionHandler.getCollection().size()>0) {
-            Collections.shuffle(CollectionHandler.getCollection());
+            Random random = new Random();
+            for(Ticket ticket: CollectionHandler.getCollection()){
+                ticket.setCoordinates(new Coordinates(random.nextInt(80),random.nextInt(80)));
+                try {
+                    DataBaseManager.updateTicket(ticket.getId(),ticket);
+                } catch (SQLException e) {
+                }
+            }
             return "Коллекция размешана.";
         }else{
             return "Коллекция пуста нечего размешивать.";
